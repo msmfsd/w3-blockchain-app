@@ -13,14 +13,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.bg-blue {
-  background-color: #2952e3;
-}
-
-.bg-blue-hover {
-  background-color: #2546bd;
-}
-
 .gradient-bg-welcome {
   background-color: #0f0e13;
   background-image: radial-gradient(
