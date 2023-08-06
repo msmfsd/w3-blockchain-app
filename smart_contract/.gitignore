@@ -29,3 +29,6 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+#Has Metamask private key
+hardhat.config.js
