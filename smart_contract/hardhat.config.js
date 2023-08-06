@@ -5,7 +5,7 @@ module.exports = {
   networks: {
     /* eth test networks: sepolia/ropsten/giao etc */
     /* url: Alchemy.com krypt tutorial app https key */
-    /* accounts[0]: Metamask Account 1 private key (DO NOT PUBLISH OR USE DOT ENV) */
+    /* accounts[0]: Metamask Account 1 private key (DO NOT PUBLISH - USE DOT ENV) */
     sepolia: {
       url: "https://eth-sepolia.g.alchemy.com/v2/dOFsxLt1J6qD3kWV4XA1RAYSRlAZF-2k",
       accounts: [
