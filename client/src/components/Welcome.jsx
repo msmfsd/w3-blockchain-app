@@ -14,16 +14,27 @@ const Input = ({ placeholder, type, name, value, handleChange }) => (
     type={type}
     step="0.0001"
     value={value}
-    onChange={() => hadleChange(e, name)}
+    onChange={(e) => handleChange(e, name)}
     className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
   />
 );
 
+/* Welcome component ******************/
 const Welcome = () => {
-  const { value } = useContext(TransactionContext);
-  console.log(value);
-  const connectWallet = () => {};
-  const handleSubmit = (e) => {};
+  const {
+    connectWallet,
+    currentAccount,
+    formData,
+    sendTransaction,
+    handleChange,
+  } = useContext(TransactionContext);
+
+  const handleSubmit = (e) => {
+    const { addressTo, amount, keyword, message } = formData;
+    e.preventDefault();
+    if (!addressTo || !amount || !keyword || !message) return;
+    sendTransaction();
+  };
 
   return (
     <div className="flex w-full justify-center items-center">
@@ -38,13 +49,17 @@ const Welcome = () => {
             Explore the crypto world. Buy and sell cryptocurrencies easily on
             krypto
           </p>
-          <button
-            type="button"
-            onClick={connectWallet}
-            className="flex flex-row justify-center items-center my-5 bg-purple-600 p-3 rounded-full cursor-pointer hover:bg-purple-700"
-          >
-            <p className="text-white text-base font-semibold">Connect Wallet</p>
-          </button>
+          {!currentAccount && (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center my-5 bg-purple-600 p-3 rounded-full cursor-pointer hover:bg-purple-700"
+            >
+              <p className="text-white text-base font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          )}
           <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
             <div className={`rounded-tl-2xl ${commonStyles}`}>Reliabilty</div>
             <div className={`rounded-tr-2xl sm:rounded-none ${commonStyles}`}>
@@ -86,25 +101,25 @@ const Welcome = () => {
               placeholder="Address to"
               name="addressTo"
               type="text"
-              hadleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="Amount (ETH)"
               name="amount"
               type="number"
-              hadleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="Keyword (Gif)"
               name="keyword"
               type="text"
-              hadleChange={() => {}}
+              handleChange={handleChange}
             />
             <Input
               placeholder="Enter Message"
               name="message"
               type="text"
-              hadleChange={() => {}}
+              handleChange={handleChange}
             />
             <div className="h-[1px] w-full bg-gray-400 my-2" />
             {false ? (
