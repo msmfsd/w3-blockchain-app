@@ -1,12 +1,11 @@
 import React, { useEffect, useContext, useState } from "react";
 import { ethers } from "ethers";
-
 import { contractABI, contractAddress } from "../utils/constants";
 
+// CONTEXT
 export const TransactionContext = React.createContext();
-
+// connect ethers provider
 const { ethereum } = window;
-
 const getEthereumContract = () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
@@ -15,15 +14,16 @@ const getEthereumContract = () => {
     contractABI,
     signer
   );
-
-  console.log({
-    provider,
-    signer,
-    transactionsContract,
-  });
+  return transactionsContract;
 };
 
+// ****************** CONTEXT PROVIDER
 export const TransactionProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  // store in local storage for reloads
+  const [transactionCount, setTransactionCount] = useState(
+    localStorage.getItem("transactionCount")
+  );
   const [currentAccount, setCurrentAccount] = useState("");
   const [formData, setFormData] = useState({
     addressTo: "",
@@ -68,8 +68,38 @@ export const TransactionProvider = ({ children }) => {
   const sendTransaction = async () => {
     try {
       if (!ethereum) return alert("Please install Metamask extension");
+
       const { addressTo, amount, keyword, message } = formData;
-      getEthereumContract();
+      const transactionsContract = getEthereumContract();
+      const parsedAmount = ethers.utils.parseEther(amount);
+
+      await ethereum.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from: currentAccount,
+            to: addressTo,
+            gas: "0x5208", // 21000 GWEI
+            value: parsedAmount._hex, // 0.001
+          },
+        ],
+      });
+
+      const transactionHash = await transactionsContract.addToBlockchain(
+        addressTo,
+        parsedAmount,
+        message,
+        keyword
+      );
+      setLoading(true);
+      console.log(`Loading - ${transactionHash.hash}`);
+      await transactionHash.wait();
+      setLoading(false);
+      console.log(`Success - ${transactionHash.hash}`);
+      // update transaction count
+      const transactionsCount =
+        await transactionsContract.getTransactionCount();
+      setTransactionCount(transactionsCount.toNumber());
     } catch (error) {
       console.log(error);
       throw new Error("No ethereum object");
